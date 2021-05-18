@@ -1,0 +1,72 @@
+#IMPORT/EXPORT
+
+# Import libraries
+import pandas as pd
+import numpy as np
+# Read the file
+path = "https://.../auto.csv"
+df = pd.read_csv(path, header=None)
+# Show the first 5 rows
+df.head(5)
+# Add headers
+headers = ["symboling","normalized-losses","...","make","fuel-type"]
+df.columns = headers
+# Save file
+df.to_csv("automobile.csv", index=False)
+# Learn the type of each attribute
+df.dtypes
+# Statistical summary of numerical columns
+df.describe()
+# Statistical summary of all column, including categorical
+df.describe(include = "all")
+df[['length', 'compression-ratio']].describe() #specific columns
+# Info about the index dtype and columns, non-null values, memory usage
+df.info()
+
+# DATA WRANGLING
+
+# Replace "?" with NaN and replace the old dataframe
+df.replace("?", np.nan, inplace = True)
+# Detecting missing data
+missing_data = df.isnull() # creates a boolean data frame with True for NAN
+missing_data.head(5)
+# Calculate the number of missing values in each column
+for column in missing_data.columns.values.tolist():
+    print(column)
+    print (missing_data[column].value_counts())
+    print("")
+# Replace "NaN" by mean value
+avg_norm_loss = df["losses"].astype("float").mean(axis=0)
+df["losses"].replace(np.nan, avg_norm_loss, inplace=True)
+# See which values are present in a particular column
+df['num-of-doors'].value_counts()
+# Calculate the most common type automatically
+df['num-of-doors'].value_counts().idxmax()
+# drop the rows with NaN in "price" column
+df.dropna(subset=["price"], axis=0, inplace=True)
+# reset index, because rows were droped
+df.reset_index(drop=True, inplace=True)
+
+# Convert data types to proper format
+df[["bore", "stroke"]] = df[["bore", "stroke"]].astype("float")
+# Standardization - Transform mpg to L/100km
+df['city-L/100km'] = 235/df["city-mpg"]
+# Normalization, Simple feature scaling: x_new = x_old / x_max
+df['length'] = df['length']/df['length'].max()
+# Min-Max: x_new = (x_old - x_min)/(x_max - x_min)
+df['length'] = (df['length']-df['length'].min())/(df['length'].max()-df['length'].min())
+# Z-score: x_new = (x_old - mean(x))/sd(x)
+df['length'] = (df['length']-df['length'].mean())/df['length'].std()
+
+# Creating Bins - linspace(start_value, end_value, numbers_generated)
+bins = np.linspace(min(df["hp"]), max(df["hp"]), 4)
+group_names = ['Low', 'Medium', 'High']
+df['hp-binned'] = pd.cut(df['hp'], bins, labels=group_names, include_lowest=True )
+# Creating indicator variables (or dummy variables), a must for regression
+dummy_var = pd.get_dummies(df["fuel-type"])
+# Rename columns to meaningful ones
+dummy_var.rename(columns={'old_name':'new_name', 'old_name': 'new_name'}, inplace=True)
+# Merge data frame "df" and "dummy_var" 
+df = pd.concat([df, dummy_var], axis=1)
+# Drop original column "fuel-type" from "df"
+df.drop("fuel-type", axis = 1, inplace=True)
