@@ -1,0 +1,124 @@
+#MODEL DEVELOPMENT
+
+# Simple Linear Regression
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression() #create a lin. reg. object
+X = df[['highway-mpg']] #predictor
+Y = df[['price']] #response
+lm.fit(X,Y) #fit the model
+Yhat=lm.predict(X) #output a prediction
+Yhat[0:5]
+lm.intercept_ # shows the intercept
+lm.coef_ #shows the slope
+
+# Multiple Linear Regression
+Z = df[['horsepower', 'weight', 'engine', 'mpg']] #predictors
+lm.fit(Z, df['price'])
+lm.intercept_
+lm.coef_
+
+# Model Evaluation using Visualization
+
+# Regression Plot = scattered data points + LR line
+import seaborn as sns
+width = 12 #of the graph itself
+height = 10 #of the graph itself
+plt.figure(figsize=(width, height))
+sns.regplot(x="highway-mpg", y="price", data=df)
+plt.ylim(0,)
+
+# Residual Plot = residuals on y-axis & independent variable on x-axis
+width = 12 #of the graph itself
+height = 10 #of the graph itself
+plt.figure(figsize=(width, height))
+sns.residplot(df['highway-mpg'], df['price'])
+plt.show() #if points randomly spread around x-axis -> LR model is good
+
+# Distribution Plot (to visualize Multiple LR model)
+Y_hat = lm.predict(Z) #make prediction
+plt.figure(figsize=(width, height))
+ax1 = sns.distplot(df['price'], hist=False, color="r", label="Actual Value") #actuals
+sns.distplot(Y_hat, hist=False, color="b", label="Fitted Values" , ax=ax1) # predicted
+plt.title('Actual vs Fitted Values for Price') #elements of the graph
+plt.xlabel('Price (in dollars)')
+plt.ylabel('Proportion of Cars')
+plt.show()
+plt.close()
+#end of Evaluation using Visualization
+
+# Polynomial Regression
+# Build function to plot the data
+def PlotPolly(model, independent_variable, dependent_variabble, Name):
+    x_new = np.linspace(15, 55, 100) 
+    y_new = model(x_new) 
+    plt.plot(independent_variable, dependent_variabble, '.', x_new, y_new, '-')
+    plt.title('Polynomial Fit with Matplotlib for Price ~ Length')
+    ax = plt.gca()
+    ax.set_facecolor((0.898, 0.898, 0.898))
+    fig = plt.gcf()
+    plt.xlabel(Name)
+    plt.ylabel('Price of Cars')
+    plt.show()
+    plt.close()
+# Get the variables
+x = df['highway-mpg']
+y = df['price']
+# Fit the polynomial
+f = np.polyfit(x, y, 3) #polynomial of the 3rd order (cubic)
+# Display the polynomial function
+p = np.poly1d(f)
+print(p)
+# Plot the function
+PlotPolly(p, x, y, 'highway-mpg')
+np.polyfit(x, y, 3) #show the model details
+
+# Polynomial transform on multiple features
+from sklearn.preprocessing import PolynomialFeatures
+pr=PolynomialFeatures(degree=2) #create a PolynomialFeatures object of degree 2
+Z_pr=pr.fit_transform(Z)
+Z.shape #shape of original data
+Z_pr.shape #shape of transformed data
+
+# Pipeline
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+# Create a list of tuples (name of model/estimator and its corresp. constructor)
+Input=[('scale',StandardScaler()), ('polynomial', PolynomialFeatures(include_bias=False)), ('model',LinearRegression())]
+# Input the list as an argument to the pipeline constructor
+pipe=Pipeline(Input)
+pipe #show details
+# Normalize the data, perform a transform and fit the model simultaneously = run the pipeline
+pipe.fit(Z,y)
+# Normalize, transform and produce a prediction simultaneously
+ypipe=pipe.predict(Z)
+ypipe[0:4]
+
+# R-squared for SLR
+lm.fit(X, Y)
+print('The R-square is: ', lm.score(X, Y))
+# MSE for SLR
+from sklearn.metrics import mean_squared_error
+Yhat=lm.predict(X) #Yhat is predicted var, X is the input variable
+mse = mean_squared_error(df['price'], Yhat)
+print('The mean square error of price and predicted value is: ', mse)
+# R-squared for MLR
+lm.fit(Z, df['price'])
+print('The R-square is: ', lm.score(Z, df['price']))
+# MSE for MLR
+Y_predict_multifit = lm.predict(Z)
+mse_m = mean_squared_error(df['price'], Y_predict_multifit)
+print('The MSE of price and predicted value using multifit is: ', mse_m)
+# R-squared for Polynomial LR
+from sklearn.metrics import r2_score
+r_squared = r2_score(y, p(x))
+print('The R-square value is: ', r_squared)
+# MSE for Polynomial LR
+mean_squared_error(df['price'], p(x))
+
+# Predictions
+new_input=np.arange(1, 100, 1).reshape(-1, 1) #new input
+lm.fit(X, Y) #fit model
+yhat=lm.predict(new_input) #produce a prediction
+yhat[0:5]
+plt.plot(new_input, yhat) #plot data
+plt.show()
