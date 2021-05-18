@@ -1,0 +1,110 @@
+#BASICS
+
+# Check the Python Version
+import sys
+sys.version
+# Type of 12
+type(12)
+# System settings about float type
+sys.float_info
+# Casting 1.1 to integer will result in loss of information
+int(1.1)
+# Returns an integer, specifically 2
+12//5
+
+#DATA STRUCTURES
+
+# Print the last element in the string
+Name = 'Michael Jackson'
+print(Name[-1])
+# Find the length of string
+len("Michael Jackson")
+# Get every second element. The elments on index 0, 2, 4...
+Name[::2]
+# Concatenate two strings
+Statement = Name + "is the best"
+# Tab escape sequence
+print(" Michael Jackson \t is the best" )
+# r will tell python that string will be display as raw string
+print(r" Michael Jackson \ is the best" )
+# Convert all the characters in string to upper case
+Name = Name.upper()
+Name = Name.replace('a', 'e')
+# Find the substring in the string.
+Name.find('Jack')
+
+# Concatenate two tuples
+tuple1 = ("disco",10,1.2 )
+tuple2 = tuple1 + ("hard rock", 10)
+# Slice from index 3 to index 4
+tuple2[3:5]
+# Get the length of tuple
+len(tuple2)
+# Sort the tuple by creating a new one
+tuple1Sorted = sorted(tuple1)
+# Create a nest tuple
+NestedT =(1, 2, ("pop", "rock") ,(3,4),("disco",(1,2)))
+# Print the first element in the second nested tuples
+NestedT[2][1][0]
+# Find the first index of "smt"
+tuple1.index("smt")
+
+# Create a list
+L = ["Michael Jackson", 10.1, 1982, [1, 2], ("A", 1)]
+# Use extend to add elements to list, each separetely = same as +
+L.extend(['pop', 10])
+# Use append to add elements to list, all as a nested list
+L.append(['pop', 10])
+# Change the element based on the index
+L[0] = 'hard rock'
+# Delete the element based on the index
+del(L[0])
+# Split the string, default is by space, a list is created
+'hard rock'.split()
+# Split the string by comma
+'A,B,C,D'.split(',')
+# Copy the reference, pointing to the same list
+A = L
+# Clone the values, creating a copy
+A = L[:]
+# Sort the list by creating a new one
+sortedList = sorted(L)
+# Sort the list without creating a new one
+L.sort() 
+
+# Create a set
+set1 = {"pop", "rock", "soul", "hard rock", "rock", "R&B", "rock", "disco"}
+# Create a set from list
+set2 = set([ "AC/DC", "Back in Black", "The Dark Side", "rock", "disco"])
+# Convert list to set, removes all dublicates
+L_set = set(L)
+# Add element to set
+set1.add("NSYNC")
+# Remove the element from set
+set1.remove("NSYNC")
+# Verify if the element is in the set
+"AC/DC" in set1
+# Find the intersections, or inner joint
+intersection = set1 & set2
+set1.intersection(set2)
+# Find the difference in set1 but not set2, or left joint
+set1.difference(set2)
+# Find the union of two sets, or outerjoin
+set1.union(set2)
+# Check if superset, fully included in set2
+set(set1).issuperset(set2)
+
+# Create the dictionary
+Dict = {"key1": 1, "key2": "2", "key3": [3, 3, 3], "key4": (4, 4, 4), ('key5'): 5, (0, 1): 6}
+# Access to the value by the key
+Dict["key1"]
+# Get all the keys in dictionary
+dict.keys() 
+# Get all the values in dictionary
+dict.values() 
+# Append value with key into dictionary
+dict['Graduation'] = '2007'
+# Delete entries by key
+del(dict['Thriller'])
+# Verify the key is in the dictionary
+'key21' in dict
